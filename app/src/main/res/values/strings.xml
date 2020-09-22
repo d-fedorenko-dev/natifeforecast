@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Natife Forecast</string>
+    <string name="first_frag_text">First Fragment</string>
+    <string name="wind_blank">- m/s</string>
+    <string name="humidity_blank">- %</string>
+    <string name="temp_blank">- C</string>
+    <string name="date_blank">--/--/--</string>
+    <string name="city_blank">blank city</string>
 </resources>
