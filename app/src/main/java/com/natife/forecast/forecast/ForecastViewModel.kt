@@ -2,10 +2,11 @@ package com.natife.forecast.forecast
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.natife.forecast.dagger.DaggerForecastComponent
 import com.natife.forecast.forecast.data.ForecastPresentation
 
 class ForecastViewModel : ViewModel() {
-    private val model = ForecastModel()
+    var model: ForecastModel = DaggerForecastComponent.create().getForecastModel()
     val forecastLiveData = MutableLiveData<ForecastPresentation>()
 
     init {
