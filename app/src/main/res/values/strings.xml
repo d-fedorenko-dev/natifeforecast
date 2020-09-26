@@ -4,6 +4,6 @@
     <string name="wind_blank">- m/s</string>
     <string name="humidity_blank">- %</string>
     <string name="temp_blank">- C</string>
-    <string name="date_blank">--/--/--</string>
+    <string name="date_blank">ПН, 19 июля</string>
     <string name="city_blank">blank city</string>
 </resources>
