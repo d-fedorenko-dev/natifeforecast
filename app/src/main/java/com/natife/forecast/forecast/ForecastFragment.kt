@@ -47,6 +47,8 @@ class ForecastFragment : Fragment() {
         dailyList.setItemViewCacheSize(12)
         dailyList.layoutManager = dailyLinearLayoutManager
 
+        observeCity()
+        //blank
         observeForecast()
         observeHourlyForecast()
         observeDailyForecast()
@@ -82,6 +84,15 @@ class ForecastFragment : Fragment() {
                 dailyAdapter = DailyListAdapter(forecastList)
                 dailyList.adapter = dailyAdapter
                 dailyAdapter.notifyItemInserted(forecastList.size - 1)
+            }
+
+        })
+    }
+
+    private fun observeCity() {
+        viewModel.forecastLiveData.observe(viewLifecycleOwner, { cityData ->
+            run {
+                city.text = cityData.city
             }
 
         })
