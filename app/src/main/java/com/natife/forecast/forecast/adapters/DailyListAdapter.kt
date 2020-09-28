@@ -1,4 +1,4 @@
-package com.natife.forecast.forecast
+package com.natife.forecast.forecast.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +20,8 @@ class DailyListAdapter(private val forecasts: ArrayList<DailyForecast>) :
 
             view.day.text = forecast.day
             view.temp.text = forecast.temp
-            //TODO change picture
+            view.icon.setImageResource(forecast.icon)
 
-            if (forecast.iconMappingType == IconMapping.BRIGHT) {
-                view.icon.setImageResource(IconMapping.getResourceById(IconMapping.BRIGHT, false))
-            }
         }
 
     }
@@ -48,4 +45,4 @@ private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean =
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-class DailyForecast(val day: String, val temp: String, val iconMappingType: Int)
+class DailyForecast(val day: String, val temp: String, val icon: Int)

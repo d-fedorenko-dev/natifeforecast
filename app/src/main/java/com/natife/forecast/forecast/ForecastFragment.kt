@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.natife.forecast.R
+import com.natife.forecast.forecast.adapters.DailyListAdapter
+import com.natife.forecast.forecast.adapters.HourlyListAdapter
 import kotlinx.android.synthetic.main.forecast_fragment.*
 
 class ForecastFragment : Fragment() {
@@ -48,7 +50,7 @@ class ForecastFragment : Fragment() {
         dailyList.layoutManager = dailyLinearLayoutManager
 
         observeCity()
-        //blank
+
         observeForecast()
         observeHourlyForecast()
         observeDailyForecast()
@@ -62,6 +64,8 @@ class ForecastFragment : Fragment() {
                 city.text = forecast.city
                 wind.text = forecast.wind
                 date.text = forecast.date
+                wetherIcon.setImageResource(forecast.weatherIcon)
+                windIcon.setImageResource(forecast.windIcon)
             }
 
         })

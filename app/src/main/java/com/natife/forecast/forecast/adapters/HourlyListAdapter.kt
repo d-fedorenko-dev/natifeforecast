@@ -1,4 +1,4 @@
-package com.natife.forecast.forecast
+package com.natife.forecast.forecast.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,11 +21,7 @@ class HourlyListAdapter(private val forecasts: ArrayList<HourlyForecast>) :
 
             view.hour.text = forecast.hour
             view.temp.text = forecast.temp
-            //TODO change picture
-
-            if (forecast.iconMappingType == IconMapping.BRIGHT) {
-                view.itemImage.setImageResource(IconMapping.getResourceById(IconMapping.BRIGHT))
-            }
+            view.itemImage.setImageResource(forecast.icon)
         }
 
     }
@@ -49,4 +45,4 @@ private fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean =
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-class HourlyForecast(val hour: String, val temp: String, val iconMappingType: Int)
+class HourlyForecast(val hour: String, val temp: String, val icon: Int)
