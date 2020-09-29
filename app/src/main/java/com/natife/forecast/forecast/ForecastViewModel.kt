@@ -4,15 +4,20 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.natife.forecast.api.model.City
+import com.natife.forecast.api.model.CityResponse
 import com.natife.forecast.api.model.ForecastResponse
 import com.natife.forecast.dagger.DaggerForecastComponent
 import com.natife.forecast.forecast.adapters.DailyForecast
 import com.natife.forecast.forecast.adapters.HourlyForecast
 import com.natife.forecast.forecast.data.ForecastPresentation
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class ForecastViewModel : ViewModel() {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+
     var currentCity: City? = null
     var currentWeather: ForecastResponse? = null
 
@@ -22,15 +27,18 @@ class ForecastViewModel : ViewModel() {
     val dailyForecastLiveData = MutableLiveData<ArrayList<DailyForecast>>()
 
     init {
-        getCity()
-
-//        getHourlyForecast()
-//        getDailyForecast()
+//        getCity()
     }
 
-    private fun getCity() {
+    fun getCity() {
         if (currentCity == null) {
-            val cityData = model.getCityData()
+
+            val cityData: Observable<CityResponse> = if (latitude == 0.0 && longitude == 0.0) {
+                model.getCityData()
+            } else {
+                model.getCityData(latitude, longitude)
+            }
+
             val subscribe = cityData.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -58,33 +66,6 @@ class ForecastViewModel : ViewModel() {
                         run {
                             currentWeather = response
                             showData()
-//
-//                            val forecastPresentation = ForecastPresentation()
-//                            forecastPresentation.city = currentCity?.name.toString()
-//                            //TODO make DaTEFORMAT
-//                            val date = ofInstant(
-//                                Instant.ofEpochMilli(response.current.dt * 1000L),
-//                                ZoneId.systemDefault()
-//                            )
-//
-//                            forecastPresentation.date = date.format(
-//                                DateTimeFormatter.ofLocalizedDate(
-//                                    FormatStyle.MEDIUM
-//                                )
-//                            )
-//                            forecastPresentation.hum = response.current.humidity.toString() + " %"
-//                            //TODO c deg
-//                            forecastPresentation.temp =
-//                                response.current.temp.roundToInt().toString() + "°"
-//                            //TODO ms on other string
-//                            forecastPresentation.wind =
-//                                response.current.wind_speed.roundToInt().toString() + " м/сек"
-//
-//                            //TODO Select picture
-//                            forecastLiveData.postValue(forecastPresentation)
-//                            //TODO parse hourly and daily
-//
-
                         }
                     },
                     { t ->
@@ -100,5 +81,11 @@ class ForecastViewModel : ViewModel() {
         forecastLiveData.postValue(fpg.forecastPresentation)
         hourlyForecastLiveData.postValue(fpg.hourlyForecastPresentation)
         dailyForecastLiveData.postValue(fpg.dailyForecastPresentation)
+    }
+
+    fun setCoords(latitude: Double, longitude: Double) {
+
+        this.latitude = latitude
+        this.longitude = longitude
     }
 }

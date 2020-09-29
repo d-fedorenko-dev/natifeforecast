@@ -12,4 +12,6 @@ class ForecastModel @Inject constructor(
 ) {
     fun getForecast(city: City): Observable<ForecastResponse> = forecastRepository.getForecast(city)
     fun getCityData(): Observable<CityResponse> = forecastRepository.getCity()
+    fun getCityData(lat: Double, lon: Double): Observable<CityResponse> =
+        forecastRepository.getCity(lat, lon)
 }

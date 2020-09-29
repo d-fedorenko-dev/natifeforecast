@@ -13,6 +13,13 @@ interface RetrofitServices {
         @Query("appid") appId: String
     ): Observable<CityResponse>
 
+    @GET("find?lang=ru")
+    fun getCity(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") appId: String
+    ): Observable<CityResponse>
+
     @GET("onecall?lang=ru&exclude=minutely&units=metric")
     fun getForecast(
         @Query("lat") lat: String,

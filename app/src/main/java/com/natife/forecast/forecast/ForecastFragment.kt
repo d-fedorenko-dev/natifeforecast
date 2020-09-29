@@ -1,13 +1,20 @@
 package com.natife.forecast.forecast
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.LocationServices
 import com.natife.forecast.R
 import com.natife.forecast.forecast.adapters.DailyListAdapter
 import com.natife.forecast.forecast.adapters.HourlyListAdapter
@@ -21,9 +28,6 @@ class ForecastFragment : Fragment() {
 
     private lateinit var hourlyAdapter: HourlyListAdapter
     private lateinit var dailyAdapter: DailyListAdapter
-
-//    private val lastVisibleItemPosition: Int
-//        get() = hourlyLinearLayoutManager.findLastVisibleItemPosition()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +53,70 @@ class ForecastFragment : Fragment() {
         dailyList.setItemViewCacheSize(12)
         dailyList.layoutManager = dailyLinearLayoutManager
 
+        observe()
+
+        if (ContextCompat.checkSelfPermission(
+                this.requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this.requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
+            )
+        } else {
+            val fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(this.requireActivity())
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        viewModel.setCoords(location.latitude, location.longitude)
+                    }
+                    viewModel.getCity()
+                }.addOnCanceledListener {
+                    viewModel.getCity()
+                }
+
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    if ((ContextCompat.checkSelfPermission(
+                            this.requireActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) ==
+                                PackageManager.PERMISSION_GRANTED)
+                    ) {
+                        val fusedLocationClient =
+                            LocationServices.getFusedLocationProviderClient(this.requireActivity())
+                        fusedLocationClient.lastLocation
+                            .addOnSuccessListener { location: Location? ->
+                                viewModel.setCoords(location?.latitude!!, location.longitude!!)
+                                viewModel.getCity()
+                            }.addOnCanceledListener {
+                                viewModel.getCity()
+                            }
+
+                    }
+                } else {
+                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+    }
+
+    private fun observe() {
         observeCity()
 
         observeForecast()
