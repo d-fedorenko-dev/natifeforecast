@@ -26,10 +26,6 @@ class ForecastViewModel : ViewModel() {
     val hourlyForecastLiveData = MutableLiveData<ArrayList<HourlyForecast>>()
     val dailyForecastLiveData = MutableLiveData<ArrayList<DailyForecast>>()
 
-    init {
-//        getCity()
-    }
-
     fun getCity() {
         if (currentCity == null) {
 
@@ -54,6 +50,13 @@ class ForecastViewModel : ViewModel() {
                         }
                     })
         }
+    }
+
+    fun getUpdateCity(longitude: Double, latitude: Double) {
+        currentCity = null
+        this.latitude = latitude
+        this.longitude = longitude
+        getCity()
     }
 
     private fun getForecast() {

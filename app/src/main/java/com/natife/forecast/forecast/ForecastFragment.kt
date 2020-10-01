@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -41,6 +40,9 @@ class ForecastFragment : Fragment() {
         currentLocation.setOnClickListener {
             findNavController().navigate(R.id.action_forecastFragment_to_locationFragment)
         }
+        cityLine.setOnClickListener {
+            findNavController().navigate(R.id.action_ForecastFragment_to_mapFragment)
+        }
 
         hourlyLinearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -55,30 +57,36 @@ class ForecastFragment : Fragment() {
 
         observe()
 
-        if (ContextCompat.checkSelfPermission(
-                this.requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this.requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
-            )
-        } else {
-            val fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(this.requireActivity())
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        viewModel.setCoords(location.latitude, location.longitude)
+        val lat = ForecastFragmentArgs.fromBundle(requireArguments()).latitude
+        val lon = ForecastFragmentArgs.fromBundle(requireArguments()).longitude
+        if (lon.toDouble() != 0.0 && lon.toDouble() != 0.0) {
+            viewModel.getUpdateCity(lon.toDouble(), lat.toDouble())
+//            viewModel.setCoords(lon.toDouble(), lat.toDouble())
+//            viewModel.getCity()
+        } else
+            if (ContextCompat.checkSelfPermission(
+                    this.requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            } else {
+                val fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(this.requireActivity())
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            viewModel.setCoords(location.latitude, location.longitude)
+                        }
+                        viewModel.getCity()
+                    }.addOnFailureListener() {
+                        viewModel.getCity()
+                    }.addOnCanceledListener {
+                        viewModel.getCity()
                     }
-                    viewModel.getCity()
-                }.addOnCanceledListener {
-                    viewModel.getCity()
-                }
 
-        }
+            }
     }
 
     override fun onRequestPermissionsResult(

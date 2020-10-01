@@ -13,6 +13,10 @@
         android:allowBackup="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name="com.natife.forecast.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

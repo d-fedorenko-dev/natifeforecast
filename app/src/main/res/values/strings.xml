@@ -6,4 +6,5 @@
     <string name="temp_blank">- C</string>
     <string name="date_blank">ПН, 19 июля</string>
     <string name="city_blank">blank city</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
 </resources>
