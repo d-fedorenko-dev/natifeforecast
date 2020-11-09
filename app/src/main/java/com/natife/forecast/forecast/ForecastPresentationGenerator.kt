@@ -1,8 +1,8 @@
 package com.natife.forecast.forecast
 
 import com.natife.forecast.R
-import com.natife.forecast.api.model.City
-import com.natife.forecast.api.model.ForecastResponse
+import com.natife.forecast.api.weather.model.City
+import com.natife.forecast.api.weather.model.ForecastResponse
 import com.natife.forecast.forecast.adapters.DailyForecast
 import com.natife.forecast.forecast.adapters.HourlyForecast
 import com.natife.forecast.forecast.data.ForecastPresentation
@@ -119,7 +119,7 @@ class ForecastPresentationGenerator(
         for (forecastDay in forecast.daily) {
 
             val date = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(forecast.current.dt * 1000L),
+                Instant.ofEpochMilli(forecastDay.dt * 1000L),
                 ZoneId.systemDefault()
             )
             val formattedDate = date.format(

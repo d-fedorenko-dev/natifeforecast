@@ -1,10 +1,9 @@
-package com.natife.forecast.location
+package com.natife.forecast.map
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -75,22 +74,44 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener,
         ) {
             buildGoogleApiClient()
             mMap!!.isMyLocationEnabled = true
+
+
         }
+
+        val fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(this.requireActivity())
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                val latLng = LatLng(
+                    location!!.latitude,
+                    location.longitude
+                )
+                val cameraPosition: CameraPosition = CameraPosition.Builder()
+                    .target(latLng) // Sets the center of the map to location user
+                    .zoom(6F) // Sets the zoom
+                    .build() // Creates a CameraPosition from the builder
+
+                mMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+
+                placeMarker(latLng)
+            }
 
         mMap!!.setOnMapLongClickListener {
-            Log.d("DEBUG", it.latitude.toString())
-            Log.d("DEBUG", it.longitude.toString())
-            mMap!!.clear()
-            mMap!!.addMarker(MarkerOptions().position(it))
-
-            action =
-                MapFragmentDirections.actionMapFragmentToForecastFragment(
-                    it.latitude.toFloat(),
-                    it.longitude.toFloat()
-                )
+            placeMarker(it)
 
         }
 
+    }
+
+    private fun placeMarker(it: LatLng) {
+        mMap!!.clear()
+        mMap!!.addMarker(MarkerOptions().position(it))
+
+        action =
+            MapFragmentDirections.actionMapFragmentToForecastFragment(
+                it.latitude.toFloat(),
+                it.longitude.toFloat()
+            )
     }
 
     @Synchronized
@@ -104,27 +125,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     override fun onLocationChanged(location: Location?) {
-        mLastLocation = location!!
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker!!.remove()
-        }
-        //Place current location marker
-        val latLng = LatLng(location.latitude, location.longitude)
-        val markerOptions = MarkerOptions()
-        markerOptions.position(latLng)
-        markerOptions.title("Current Position")
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-        mCurrLocationMarker = mMap!!.addMarker(markerOptions)
-
-        //move map camera
-        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-        mMap!!.animateCamera(CameraUpdateFactory.zoomTo(11f))
-
-        //stop location updates
         if (mGoogleApiClient != null) {
             LocationServices.getFusedLocationProviderClient(this.requireActivity())
         }
-
     }
 
     override fun onConnected(p0: Bundle?) {

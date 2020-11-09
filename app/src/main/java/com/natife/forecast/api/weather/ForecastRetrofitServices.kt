@@ -1,12 +1,12 @@
-package com.natife.forecast.api
+package com.natife.forecast.api.weather
 
-import com.natife.forecast.api.model.CityResponse
-import com.natife.forecast.api.model.ForecastResponse
+import com.natife.forecast.api.weather.model.CityResponse
+import com.natife.forecast.api.weather.model.ForecastResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RetrofitServices {
+interface ForecastRetrofitServices {
     @GET("find?lang=ru")
     fun getCity(
         @Query("q") cityName: String,

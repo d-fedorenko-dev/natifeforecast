@@ -1,4 +1,4 @@
-package com.natife.forecast.api.model
+package com.natife.forecast.api.weather.model
 
 data class ForecastResponse(
     val timezone: String,

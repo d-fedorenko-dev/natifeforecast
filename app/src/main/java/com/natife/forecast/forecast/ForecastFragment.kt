@@ -1,12 +1,14 @@
 package com.natife.forecast.forecast
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -37,6 +39,14 @@ class ForecastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val inputManager: InputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(
+            activity?.currentFocus?.windowToken,
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
+
         currentLocation.setOnClickListener {
             findNavController().navigate(R.id.action_forecastFragment_to_locationFragment)
         }
@@ -61,8 +71,6 @@ class ForecastFragment : Fragment() {
         val lon = ForecastFragmentArgs.fromBundle(requireArguments()).longitude
         if (lon.toDouble() != 0.0 && lon.toDouble() != 0.0) {
             viewModel.getUpdateCity(lon.toDouble(), lat.toDouble())
-//            viewModel.setCoords(lon.toDouble(), lat.toDouble())
-//            viewModel.getCity()
         } else
             if (ContextCompat.checkSelfPermission(
                     this.requireActivity(),

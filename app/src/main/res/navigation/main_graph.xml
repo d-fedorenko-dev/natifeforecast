@@ -27,12 +27,27 @@
     </fragment>
     <fragment
         android:id="@+id/locationFragment"
-        android:name="com.natife.forecast.location.LocationFragment"
+        android:name="com.natife.forecast.location.SearchFragment"
         android:label="fragment_location_item_list"
-        tools:layout="@layout/fragment_location_item_list" />
+        tools:layout="@layout/fragment_location_item_list">
+
+        <action
+            android:id="@+id/action_locationFragment_to_forecastFragment"
+            app:destination="@id/ForecastFragment">
+            <argument
+                android:name="latitude"
+                android:defaultValue="0.0"
+                app:argType="float" />
+            <argument
+                android:name="longitude"
+                android:defaultValue="0.0"
+                app:argType="float" />
+        </action>
+
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.natife.forecast.location.MapFragment"
+        android:name="com.natife.forecast.map.MapFragment"
         android:label="MapFragment">
 
         <action

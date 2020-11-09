@@ -3,9 +3,9 @@ package com.natife.forecast.forecast
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.natife.forecast.api.model.City
-import com.natife.forecast.api.model.CityResponse
-import com.natife.forecast.api.model.ForecastResponse
+import com.natife.forecast.api.weather.model.City
+import com.natife.forecast.api.weather.model.CityResponse
+import com.natife.forecast.api.weather.model.ForecastResponse
 import com.natife.forecast.dagger.DaggerForecastComponent
 import com.natife.forecast.forecast.adapters.DailyForecast
 import com.natife.forecast.forecast.adapters.HourlyForecast

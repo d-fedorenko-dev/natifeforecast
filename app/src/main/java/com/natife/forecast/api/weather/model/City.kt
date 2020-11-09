@@ -1,4 +1,4 @@
-package com.natife.forecast.api.model
+package com.natife.forecast.api.weather.model
 
 data class CityResponse(
     var list: ArrayList<City>? = null

@@ -1,8 +1,8 @@
 package com.natife.forecast.forecast
 
-import com.natife.forecast.api.model.City
-import com.natife.forecast.api.model.CityResponse
-import com.natife.forecast.api.model.ForecastResponse
+import com.natife.forecast.api.weather.model.City
+import com.natife.forecast.api.weather.model.CityResponse
+import com.natife.forecast.api.weather.model.ForecastResponse
 import com.natife.forecast.forecast.data.ForecastRepository
 import io.reactivex.Observable
 import javax.inject.Inject
