@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.natife.forecast.R
 import com.natife.forecast.forecast.adapters.DailyListAdapter
+import com.natife.forecast.forecast.adapters.HourlyForecast
 import com.natife.forecast.forecast.adapters.HourlyListAdapter
 import kotlinx.android.synthetic.main.forecast_fragment.*
 
@@ -65,7 +66,7 @@ class ForecastFragment : Fragment() {
         dailyList.setItemViewCacheSize(12)
         dailyList.layoutManager = dailyLinearLayoutManager
 
-        observe()
+        observe(-1)
 
         val lat = ForecastFragmentArgs.fromBundle(requireArguments()).latitude
         val lon = ForecastFragmentArgs.fromBundle(requireArguments()).longitude
@@ -132,27 +133,37 @@ class ForecastFragment : Fragment() {
         }
     }
 
-    private fun observe() {
+    private fun observe(i: Int) {
         observeCity()
 
-        observeForecast()
+        observeForecast(i)
         observeHourlyForecast()
         observeDailyForecast()
     }
 
-    private fun observeForecast() {
-        viewModel.forecastLiveData.observe(viewLifecycleOwner, { forecast ->
-            run {
-                temp.text = forecast.temp
-                humidity.text = forecast.hum
-                city.text = forecast.city
-                wind.text = forecast.wind
-                date.text = forecast.date
-                wetherIcon.setImageResource(forecast.weatherIcon)
-                windIcon.setImageResource(forecast.windIcon)
-            }
+    private fun observeOtherDay(num: Int) {
+        viewModel.forecastLiveData.postValue(viewModel.dailyForecastLiveData.value?.get(num))
+        val al = ArrayList<HourlyForecast>()
+        hourlyList.adapter = HourlyListAdapter(al)
 
-        })
+        dailyAdapter.notifyDataSetChanged()
+    }
+
+    private fun observeForecast(num: Int) {
+        if (num == -1)
+            viewModel.forecastLiveData.observe(viewLifecycleOwner, { forecast ->
+                run {
+                    temp.text = forecast.temp
+                    humidity.text = forecast.hum
+                    city.text = forecast.city
+                    wind.text = forecast.wind
+                    date.text = forecast.date
+                    wetherIcon.setImageResource(forecast.weatherIcon)
+                    windIcon.setImageResource(forecast.windIcon)
+                }
+
+            })
+        else (observeOtherDay(num))
     }
 
     private fun observeHourlyForecast() {
@@ -169,7 +180,13 @@ class ForecastFragment : Fragment() {
     private fun observeDailyForecast() {
         viewModel.dailyForecastLiveData.observe(viewLifecycleOwner, { forecastList ->
             run {
-                dailyAdapter = DailyListAdapter(forecastList)
+                dailyAdapter = DailyListAdapter(forecastList) { num: Int ->
+                    if (num == 0)
+                        observe(num)
+                    else
+                        observeOtherDay(num)
+
+                }
                 dailyList.adapter = dailyAdapter
                 dailyAdapter.notifyItemInserted(forecastList.size - 1)
             }
@@ -182,7 +199,6 @@ class ForecastFragment : Fragment() {
             run {
                 city.text = cityData.city
             }
-
         })
     }
 }

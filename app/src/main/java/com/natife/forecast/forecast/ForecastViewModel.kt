@@ -7,7 +7,6 @@ import com.natife.forecast.api.weather.model.City
 import com.natife.forecast.api.weather.model.CityResponse
 import com.natife.forecast.api.weather.model.ForecastResponse
 import com.natife.forecast.dagger.DaggerForecastComponent
-import com.natife.forecast.forecast.adapters.DailyForecast
 import com.natife.forecast.forecast.adapters.HourlyForecast
 import com.natife.forecast.forecast.data.ForecastPresentation
 import io.reactivex.Observable
@@ -24,7 +23,7 @@ class ForecastViewModel : ViewModel() {
     var model: ForecastModel = DaggerForecastComponent.create().getForecastModel()
     val forecastLiveData = MutableLiveData<ForecastPresentation>()
     val hourlyForecastLiveData = MutableLiveData<ArrayList<HourlyForecast>>()
-    val dailyForecastLiveData = MutableLiveData<ArrayList<DailyForecast>>()
+    val dailyForecastLiveData = MutableLiveData<ArrayList<ForecastPresentation>>()
 
     fun getCity() {
         if (currentCity == null) {
